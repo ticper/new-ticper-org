@@ -41,7 +41,7 @@
   </head>
   <body>
     <ul id="o-menu" class="dropdown-content">
-      <li><a href="r-qrcheck.php">食券読み込み</a></li>
+      <li><a href="qrcheck.php">食券読み込み</a></li>
       <li><a href="#!">食券情報表示</a></li>      
     </ul>
     <ul id="slide-out" class="sidenav">
@@ -62,7 +62,7 @@
           </a>
         </div>
       </li>
-      <li><a href="#!" class="dropdown-trigger" data-target="o-menu">メニュー<i class="material-icons right">arrow_drop_down</i></a></li>
+      <li><a href="#!" class="dropdown-trigger" data-target="o-menu">食券管理メニュー<i class="material-icons right">arrow_drop_down</i></a></li>
       <li class="divider"></li>
       <li><a href="logout.php">ログアウト</a></li>
     </ul>

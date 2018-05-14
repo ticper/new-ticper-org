@@ -79,40 +79,43 @@
     </nav>
     <script>
       $(".dropdown-trigger").dropdown();
-      $(document).ready(function(){
-        $('.sidenav').sidenav();
-        M.toast({html: '<?php print($result['UserName']); ?>としてログインしました。'})
-      });
     </script>
     <div class="container">
       <div class="row">
         <div class="row s12">
           <h3>食券読み込み</h3>
-          <video id="preview"></video>
-
+          <video id="preview" style="width: 100%;height: 300px;"></video>
+           <form action="result.php" method="GET">
+            <input type="text" name="acode" class="validate" id="info">
+            <input type="submit" value="送信" class="btn">
+          </form>
           <script src="config/instascan.min.js"></script>
           <script>
-            
             var videoTag = document.getElementById('preview');
-            var scanner = new Instascan.Scanner({ videp: videoTag });
+            var info = document.getElementById('info');
+            var scanner = new Instascan.Scanner({ video: videoTag });
 
             scanner.addListener('scan', function(value){
-              data.value = value;
-              M.toast((html: 'QRコードを読み取りました'))
+              info.value = value;
+              M.toast({html: 'QRコードを読み取りました'})
               document.getElementById('sound-file').play();
             });
 
             Instascan.Camera.getCameras()
-              .then(function ( cameras ) {
-                if(cameras.length >0 ){
-                  scanner.start( cameras[0] );
-              }
-              else{
-                console.error('カメラが見つかりません');
-              }
-            });
-
+            .then(function (cameras) {
+                if (cameras.length > 0) {
+                 scanner.start(cameras[1]);
+             }else{
+               console.error('カメラが見つかりません');
+             }
+            })
+            .catch(function(err) {
+                alert(err);
+          });
           </script>
+          <audio id="sound-file" preload="auto">
+            <source src="config/yomitori.wav" type="audio/wav">
+          </audio>
         </div>
       </div>
     </div>
