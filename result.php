@@ -22,12 +22,12 @@
 	}
 
 	$sql2 = mysqli_query($db_link,"SELECT OrgID FROM tp_user_org WHERE UserID = '$userid'");
-	$result2 = mysqli_fetch_assoc($orgid);
-	$orgid = $result2['Org_ID'];
+	$result2 = mysqli_fetch_assoc($sql2);
+	$orgid = $result2['OrgID'];
 
-	$sql3 = mysqli_query($db_link,"SELECT Org_ID FROM tp_food WHERE FoodID = '$foodid'");
+	$sql3 = mysqli_query($db_link,"SELECT OrgID FROM tp_food WHERE FoodID = '$foodid'");
 	$result3 = mysqli_fetch_assoc($sql3);
-	$s_orgid = $result3['Org_ID'];
+	$s_orgid = $result3['OrgID'];
 
 	if($orgid != $s_orgid){
 		print("<script>alert('このQRはあなたの団体では使用できません。もう一度確認して下さい');location.href = 'qrcheck.php';</script>");
