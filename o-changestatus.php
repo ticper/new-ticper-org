@@ -112,7 +112,7 @@
                 }
             ?><br>
             <div class="input-field col s12">
-                <select name="statuschangeto">
+                <select name="statuschangeto>
                     <option value="" disabled selected>選択してください。</option>
                     <option value="0">空いている</option>
                     <option value="1">少し混んでいる</option>

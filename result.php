@@ -12,6 +12,7 @@
 		print("<script>alert('不正なリクエスト');location.href = 'qrcheck.php';</script>");
 	}
 	$sql = mysqli_query($db_link, "SELECT Used,Sheets,FoodID FROM tp_ticket WHERE TicketACode = '$acode'");
+	$userid = $_SESSION['UserID'];
 	$result = mysqli_fetch_assoc($sql);
 	$check = $result['Used'];
 	$seets = $result['Sheets'];
@@ -19,7 +20,18 @@
 	if($check != '0') {
 		print("<script>alert('この食券は使用済みです');location.href = 'qrcheck.php';</script>");
 	}
-	else {
+
+	$sql2 = mysqli_query($db_link,"SELECT OrgID FROM tp_user_org WHERE UserID = '$userid'");
+	$result2 = mysqli_fetch_assoc($orgid);
+	$orgid = $result2['Org_ID'];
+
+	$sql3 = mysqli_query($db_link,"SELECT Org_ID FROM tp_food WHERE FoodID = '$foodid'");
+	$result3 = mysqli_fetch_assoc($sql3);
+	$s_orgid = $result3['Org_ID'];
+
+	if($orgid != $s_orgid){
+		print("<script>alert('このQRはあなたの団体では使用できません。もう一度確認して下さい');location.href = 'qrcheck.php';</script>");
+	} else {
 		mysqli_query($db_link, "UPDATE tp_ticket SET Used = '1' WHERE TicketACode = '$acode'");
 		mysqli_query($db_link, "UPDATE tp_food SET Used = Used + '$seets' WHERE FoodID = '$foodid'");
 	}
