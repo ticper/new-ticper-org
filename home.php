@@ -42,7 +42,7 @@
   <body>
     <ul id="o-menu" class="dropdown-content">
       <li><a href="qrcheck.php">食券読み込み</a></li>
-      <li><a href="#!">食券情報表示</a></li>      
+      <li><a href="#!">食券情報表示</a></li>
     </ul>
     <ul id="slide-out" class="sidenav">
       <li>
