@@ -79,6 +79,7 @@
     </nav>
     <script>
       $(".dropdown-trigger").dropdown();
+      $('.sidenav').sidenav();
     </script>
     <div class="container">
       <div class="row">
