@@ -5,6 +5,13 @@
   } else {
 
   }
+
+  if(isset($_POST['num'])){
+    $_SESSION['num'] = $_POST['num'];
+  }
+  if(isset($_SESSION['num']) == '') {
+    $_SESSION['num'] = 0;
+  }
 ?>
 <!DOCTYPE HTML>
 <html lang="ja">
@@ -90,6 +97,17 @@
             <input type="text" name="acode" class="validate" id="info">
             <input type="submit" value="送信" class="btn">
           </form>
+          <p id="num" hidden><?php print($_SESSION['num']); ?></p>
+          <form action="qrcheck.php" method="POST">
+            <?php
+              if($_SESSION['num'] == '0'){
+                print('<input type="hidden" name="num" value="1">');
+              } else {
+                print('<input type="hidden" name="num" value="0">');
+              }
+            ?>
+            <input type="submit" value="カメラを切り替える" class="btn" style="margin-top: 10px;">
+          </form>
           <script src="config/instascan.min.js"></script>
           <script>
             var videoTag = document.getElementById('preview');
@@ -105,7 +123,9 @@
             Instascan.Camera.getCameras()
             .then(function (cameras) {
                 if (cameras.length > 0) {
-                 scanner.start(cameras[1]);
+                  var num;
+                  num = document.getElementById('num').innerHTML;
+                 scanner.start(cameras[num]);
              }else{
                console.error('カメラが見つかりません');
              }
