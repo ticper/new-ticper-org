@@ -3,7 +3,16 @@
   if(isset($_SESSION['UserID']) == '') {
     print("<script>location.href = 'index.php';</script>");
   } else {
-
+    require_once('config/config.php');
+    $foodid = $_GET['id'];
+    $userid = $_SESSION['UserID'];
+    $sql = mysqli_query($db_link,"SELECT OrgID FROM tp_user_org WHERE UserID = '$userid'");
+    $result = mysqli_fetch_assoc($sql);
+    $sql2 = mysqli_query($db_link,"SELECT OrgID FROM tp_food WHERE FoodID = '$foodid'");
+    $result2 = mysqli_fetch_assoc($sql2);
+    if($result['OrgID'] != $result2['OrgID']){
+      print('<script>alert("この食品情報はあなたのアカウントでは閲覧できません");location.href = "s-check.php";</script>');
+    }
   }
 ?>
 <!DOCTYPE HTML>
@@ -19,7 +28,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- ページタイトル -->
-    <title>混雑度表示 - Ticper</title>
+    <title>メニュー - Ticper</title>
 
     <!-- jQuery(フレームワーク)導入 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -54,7 +63,6 @@
           <a href="#!name" style="color: white;">
             <?php
               $UserID = $_SESSION['UserID'];
-              require_once('config/config.php');
               $sql = mysqli_query($db_link, "SELECT UserName FROM tp_user_booth WHERE UserID = '$UserID'");
               $result = mysqli_fetch_assoc($sql);
               print($result['UserName']);
@@ -88,47 +96,21 @@
     <div class="container">
       <div class="row">
         <div class="row s12">
-          <h3>混雑度を変更する</h3>
+          <h3>ステータスチェック</h3>
           <?php
-            require_once('config/config.php');
-            $userid = $_SESSION['UserID'];
-            $sql = mysqli_query($db_link, "SELECT OrgID FROM tp_user_org WHERE UserID = '$userid'");
+            $sql = mysqli_query($db_link, "SELECT * FROM tp_food WHERE FoodID = '$foodid'");
             $result = mysqli_fetch_assoc($sql);
-            $orgid = $result['OrgID'];
-            $sql = mysqli_query($db_link, "SELECT Status FROM tp_org WHERE OrgID = '$orgid'");
+            print('<h4>'.$result['FoodName'].'</h4>');
+            print('<hr />');
+            $sql = mysqli_query($db_link, "SELECT FoodStockFrom, FoodStock, Bought, Used, Bought - Used AS num FROM tp_food WHERE FoodID = '$foodid'");
             $result2 = mysqli_fetch_assoc($sql);
-            $status = $result2['Status'];
-          ?>
-          <form action="o-changestatusdo.php" method="POST">
-            <input type="hidden" name="orgid" value="<?php print($result['OrgID']); ?>" />
-            <p><b>現在のステータス</b>: 
-            <?php
-                if($status == 0) {
-                    print("空いている");
-                } elseif ($status == 1) {
-                    print("少し混んでいる");
-                } elseif ($status == 2) {
-                    print("結構混んでいる");
-                } elseif ($status == 3) {
-                    print("超混んでいる");
-                }
-            ?><br>
-            <div class="input-field col s12">
-                <select name="statuschangeto">
-                    <option disabled>選択してください。</option>
-                    <option value="0">空いている</option>
-                    <option value="1">少し混んでいる</option>
-                    <option value="2">結構混んでいる</option>
-                    <option value="3">超混んでいる</option>
-                </select>
-            </div>
-            <input type="submit" value="送信" class="btn">
-          </form>
-          <script>
-            $(document).ready(function(){
-                $('select').formSelect();
-            });
-          </script>
+            print('<h5>食券総枚数</h5>'.$result2['FoodStockFrom'].'枚<hr />');
+            print('<h5>販売済み枚数</h5>'.$result2['Bought'].'枚<hr />');
+            print('<h5>未使用枚数</h5>'.$result2['num'].'枚<hr />');
+            print('<h5>使用済み枚数</h5>'.$result2['Used'].'枚<hr />');
+            print('<h5>食券残り枚数</h5>'.$result2['FoodStock'].'枚<hr />');
+		  ?>
+          </ul>
         </div>
       </div>
     </div>

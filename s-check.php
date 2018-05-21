@@ -19,7 +19,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- ページタイトル -->
-    <title>混雑度表示 - Ticper</title>
+    <title>メニュー - Ticper</title>
 
     <!-- jQuery(フレームワーク)導入 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -88,47 +88,22 @@
     <div class="container">
       <div class="row">
         <div class="row s12">
-          <h3>混雑度を変更する</h3>
-          <?php
-            require_once('config/config.php');
-            $userid = $_SESSION['UserID'];
-            $sql = mysqli_query($db_link, "SELECT OrgID FROM tp_user_org WHERE UserID = '$userid'");
-            $result = mysqli_fetch_assoc($sql);
-            $orgid = $result['OrgID'];
-            $sql = mysqli_query($db_link, "SELECT Status FROM tp_org WHERE OrgID = '$orgid'");
-            $result2 = mysqli_fetch_assoc($sql);
-            $status = $result2['Status'];
-          ?>
-          <form action="o-changestatusdo.php" method="POST">
-            <input type="hidden" name="orgid" value="<?php print($result['OrgID']); ?>" />
-            <p><b>現在のステータス</b>: 
+          <h3>ステータスチェック</h3>
             <?php
-                if($status == 0) {
-                    print("空いている");
-                } elseif ($status == 1) {
-                    print("少し混んでいる");
-                } elseif ($status == 2) {
-                    print("結構混んでいる");
-                } elseif ($status == 3) {
-                    print("超混んでいる");
-                }
-            ?><br>
-            <div class="input-field col s12">
-                <select name="statuschangeto">
-                    <option disabled>選択してください。</option>
-                    <option value="0">空いている</option>
-                    <option value="1">少し混んでいる</option>
-                    <option value="2">結構混んでいる</option>
-                    <option value="3">超混んでいる</option>
-                </select>
-            </div>
-            <input type="submit" value="送信" class="btn">
-          </form>
-          <script>
-            $(document).ready(function(){
-                $('select').formSelect();
-            });
-          </script>
+            $sql0 = mysqli_query($db_link,"SELECT OrgID FROM tp_user_org WHERE UserID = '$UserID'");
+            $result0 = mysqli_fetch_assoc($sql0);
+            $orgid = $result0['OrgID'];
+            $sql = mysqli_query($db_link, "SELECT * FROM tp_org WHERE OrgID = '$orgid'");
+            $result = mysqli_fetch_assoc($sql);
+            print('<h4>'.$result['OrgName'].'</h4>');
+            print('<ul>');
+            $sql2 = mysqli_query($db_link, "SELECT * FROM tp_food WHERE OrgID = '$orgid'");
+            while($result2 = mysqli_fetch_assoc($sql2)) {
+              print('<li><a href="s-checkdo.php?id='.$result2['FoodID'].'">'.$result2['FoodName'].'</a></li>');
+            }
+              print('</ul>');
+          ?>
+          </ul>
         </div>
       </div>
     </div>

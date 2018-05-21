@@ -49,7 +49,7 @@
   <body>
     <ul id="o-menu" class="dropdown-content">
       <li><a href="qrcheck.php">食券読み込み</a></li>
-      <li><a href="#!">食券情報表示</a></li>      
+      <li><a href="s-check.php">食券情報表示</a></li>
     </ul>
     <ul id="slide-out" class="sidenav">
       <li>
@@ -71,6 +71,8 @@
       </li>
       <li><a href="#!" class="dropdown-trigger" data-target="o-menu">食券管理メニュー<i class="material-icons right">arrow_drop_down</i></a></li>
       <li class="divider"></li>
+      <li><a href="o-changestatus.php">混雑度管理メニュー</a></li>
+      <li class="divider"></li>
       <li><a href="logout.php">ログアウト</a></li>
     </ul>
     <nav class="light-blue darken-4">
@@ -86,7 +88,9 @@
     </nav>
     <script>
       $(".dropdown-trigger").dropdown();
-      $('.sidenav').sidenav();
+      $(document).ready(function(){
+        $('.sidenav').sidenav();
+      });
     </script>
     <div class="container">
       <div class="row">
