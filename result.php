@@ -159,6 +159,7 @@
 						</tbody>
 					</table>
 					<p><a class="btn" href="qrcheck.php">読み込みに戻る</a></p>
+					<p><a class="btn" href="o-changestatus.php">混雑度を変更する</a></p>
        			</div>
       		</div>
     	</div>
