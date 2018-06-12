@@ -1,11 +1,11 @@
 <?php
   session_start();
-  if(isset($_SESSION['UserID']) == '') {
+  if(isset($_SESSION['O_UserID']) == '') {
     print("<script>location.href = 'index.php';</script>");
   } else {
     require_once('config/config.php');
     $foodid = $_GET['id'];
-    $userid = $_SESSION['UserID'];
+    $userid = $_SESSION['O_UserID'];
     $sql = mysqli_query($db_link,"SELECT OrgID FROM tp_user_org WHERE UserID = '$userid'");
     $result = mysqli_fetch_assoc($sql);
     $sql2 = mysqli_query($db_link,"SELECT OrgID FROM tp_food WHERE FoodID = '$foodid'");
@@ -62,7 +62,7 @@
           <a href="#!user"><img class="circle" src="img/icon.jpg"></a>
           <a href="#!name" style="color: white;">
             <?php
-              $UserID = $_SESSION['UserID'];
+              $UserID = $_SESSION['O_UserID'];
               $sql = mysqli_query($db_link, "SELECT UserName FROM tp_user_booth WHERE UserID = '$UserID'");
               $result = mysqli_fetch_assoc($sql);
               print($result['UserName']);

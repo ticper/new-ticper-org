@@ -20,7 +20,7 @@
   if($e_userid == $result['UserID'] and password_verify($e_password, $result['Password'])) {
     // セッション
     session_start();
-    $_SESSION['UserID'] = $e_userid;
+    $_SESSION['O_UserID'] = $e_userid;
     $logMessage = "団体用Ticperにログイン";
     $sql = mysqli_query($db_link, "INSERT INTO tp_log ('Time', 'Action', 'BoothUserID') VALUES (CURRENT_TIMESTAMP, '$logMessage', '$e_userid')");
     print('<script>location.href = "home.php";</script>');

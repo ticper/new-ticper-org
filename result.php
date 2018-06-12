@@ -2,7 +2,7 @@
 	session_start();
 	require_once('config/config.php');
 	$acode = $_GET['acode'];
-	if(isset($_SESSION['UserID']) == ''){
+	if(isset($_SESSION['O_UserID']) == ''){
 		print("<script>alert('ログインしてからアクセスして下さい'); location.href = 'qrcheck.php';</script>");
 	} else {
 
@@ -12,7 +12,7 @@
 		print("<script>alert('不正なリクエスト');location.href = 'qrcheck.php';</script>");
 	}
 	$sql = mysqli_query($db_link, "SELECT Used,Sheets,FoodID FROM tp_ticket WHERE TicketACode = '$acode'");
-	$userid = $_SESSION['UserID'];
+	$userid = $_SESSION['O_UserID'];
 	$result = mysqli_fetch_assoc($sql);
 	$check = $result['Used'];
 	$seets = $result['Sheets'];
@@ -95,7 +95,7 @@
 					<a href="#!user"><img class="circle" src="img/icon.jpg"></a>
 					<a href="#!name" style="color: white;">
 						<?php
-							$UserID = $_SESSION['UserID'];
+							$UserID = $_SESSION['O_UserID'];
 							require_once('config/config.php');
 							$sql = mysqli_query($db_link, "SELECT UserName FROM tp_user_booth WHERE UserID = '$UserID'");
 							$result = mysqli_fetch_assoc($sql);

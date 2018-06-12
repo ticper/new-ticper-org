@@ -1,6 +1,6 @@
 <?php
   session_start();
-  if(isset($_SESSION['UserID']) == '') {
+  if(isset($_SESSION['O_UserID']) == '') {
 
   } else {
     print("<script>location.href = 'home.php';</script>");
