@@ -72,7 +72,6 @@
       <li><a href="#!" class="dropdown-trigger" data-target="o-menu">食券管理メニュー<i class="material-icons right">arrow_drop_down</i></a></li>
       <li class="divider"></li>
       <li><a href="o-changestatus.php">混雑度管理メニュー</a></li>
-      <li><a href="t-news.php">ニュース</a></li>
       <li class="divider"></li>
       <li><a href="logout.php">ログアウト</a></li>
     </ul>
@@ -91,7 +90,6 @@
       $(".dropdown-trigger").dropdown();
       $(document).ready(function(){
         $('.sidenav').sidenav();
-        M.toast({html: '<?php print($result['UserName']); ?>としてログインしました。'})
       });
     </script>
     <div class="container">

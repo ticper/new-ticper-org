@@ -88,22 +88,25 @@
     <div class="container">
       <div class="row">
         <div class="row s12">
-          <h3>ステータスチェック</h3>
-            <?php
-            $sql0 = mysqli_query($db_link,"SELECT OrgID FROM tp_user_org WHERE UserID = '$UserID'");
-            $result0 = mysqli_fetch_assoc($sql0);
-            $orgid = $result0['OrgID'];
-            $sql = mysqli_query($db_link, "SELECT * FROM tp_org WHERE OrgID = '$orgid'");
-            $result = mysqli_fetch_assoc($sql);
-            print('<h4>'.$result['OrgName'].'</h4>');
-            print('<ul>');
-            $sql2 = mysqli_query($db_link, "SELECT * FROM tp_food WHERE OrgID = '$orgid'");
-            while($result2 = mysqli_fetch_assoc($sql2)) {
-              print('<li><a href="s-checkdo.php?id='.$result2['FoodID'].'">'.$result2['FoodName'].'</a></li>');
+          <h3>調理依頼</h3>
+          <table>
+            <tr><th>団体名</th><th>食品名</th><th>残生産数</th><th>送信</th></tr>
+          <?php
+            $sql = mysqli_query($db_link,"SELECT FoodID,cook,cooked,FoodName,OrgID FROM tp_food ORDER BY OrgID DESC");
+            while($result = mysqli_fetch_assoc($sql)) {
+              $foodid= $result['FoodID'];
+              $sql2 = mysqli_query($db_link, "SELECT SUM(Sheets) AS num FROM tp_ticket WHERE FoodID = '$foodid' AND Used=1 ");
+              $cook = mysqli_fetch_assoc($sql2);
+              $cooking = $cook['num'] - $result['cooked'];
+              $orgid = $result['OrgID'];
+              $sql3 = mysqli_query($db_link,"SELECT OrgName FROM tp_org WHERE OrgID = '$orgid'");
+              $result3 = mysqli_fetch_assoc($sql3);
+              $cook_do = $cook['num'];
+              if($cooking > 0){
+                print('<tr><td>'.$result3['OrgName'].'</td><td>'.$result['FoodName'].'</td><td>'.$cooking.'</td><td><form action="cook_do.php" method="POST"><input type="hidden" name="FoodID" value="'.$result['FoodID'].'"><input required style="width: 100px;" placeholder="枚数を入力" type="number" name="maisu" min="1" max="'.$cooking.'"><input class="btn" type="submit" value="送信"></form></td></tr>');
+              }
             }
-              print('</ul>');
           ?>
-          </ul>
         </div>
       </div>
     </div>
