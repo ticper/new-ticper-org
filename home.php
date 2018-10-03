@@ -66,7 +66,7 @@
       <li class="divider"></li>
       <li><a href="o-changestatus.php">混雑度管理メニュー</a></li>
       <li class="divider"></li>
-      <li><a href="o-changestatus.php">混雑度管理メニュー</a></li>
+      <li><a href="cook.php">調理管理メニュー</a></li>
       <li class="divider"></li>
       <li><a href="logout.php">ログアウト</a></li>
     </ul>
