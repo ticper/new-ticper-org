@@ -11,16 +11,21 @@
 	if($acode == '') {
 		print("<script>alert('不正なリクエスト');location.href = 'qrcheck.php';</script>");
 	}
-	$sql = mysqli_query($db_link, "SELECT Used,Sheets,FoodID FROM tp_ticket WHERE TicketACode = '$acode'");
+	$sql = mysqli_query($db_link, "SELECT Got,Used,Cook,Sheets,FoodID FROM tp_ticket WHERE TicketACode = '$acode'");
 	$userid = $_SESSION['O_UserID'];
 	$result = mysqli_fetch_assoc($sql);
 	$check = $result['Used'];
+	$got = $result['Got'];
+	$cook = $result['Cook'];
 	$seets = $result['Sheets'];
 	$foodid = $result['FoodID'];
-	if($check != '0') {
+	if($check != '0' and $cook != '0' and $got != '0') {
 		print("<script>alert('この食券は使用済みです');location.href = 'qrcheck.php';</script>");
-	}
-
+	} elseif($check != '0' and $cook != '1') {
+		print("<script>alert('この食券は調理待機中です。');location.href = 'qrcheck.php';</script>");
+	} elseif($check != '0' and $cook != '0' and $got != '1') {
+		$sql = mysqli_query($db_link, "UPDATE tp_ticket SET Got = 1 WHERE TicketACode = '$acode'");
+		print("<script>alert('受け取りました');location.href = 'qrcheck.php';</script>");
 	$sql2 = mysqli_query($db_link,"SELECT OrgID FROM tp_user_org WHERE UserID = '$userid'");
 	$result2 = mysqli_fetch_assoc($sql2);
 	$orgid = $result2['OrgID'];
@@ -32,9 +37,16 @@
 	if($orgid != $s_orgid){
 		print("<script>alert('このQRはあなたの団体では使用できません。もう一度確認して下さい');location.href = 'qrcheck.php';</script>");
 	} else {
-		mysqli_query($db_link, "UPDATE tp_ticket SET Used = '1' WHERE TicketACode = '$acode'");
-		mysqli_query($db_link, "UPDATE tp_food SET Used = Used + '$seets' WHERE FoodID = '$foodid'");
+		$sql3 = mysqli_query($db_link,"SELECT Sokuji FROM tp_food WHERE FoodID = '$foodid'");
+		$result4 = mysqli_fetch_assoc($sql3);
+		if($result4['Sokuji'] == '0') {
+			mysqli_query($db_link, "UPDATE tp_ticket SET Used = '1' WHERE TicketACode = '$acode'");
+			mysqli_query($db_link, "UPDATE tp_food SET Used = Used + '$seets' WHERE FoodID = '$foodid'");
+		} else {
+			mysqli_query($db_link, "UPDATE tp_ticket SET Used = '1', Cook = '1' WHERE TicketACode = '$acode'");
+			mysqli_query($db_link, "UPDATE tp_food SET Used = Used + '$seets' WHERE FoodID = '$foodid'");
 	}
+}}
 ?>
 
 <!DOCTYPE HTML>
@@ -70,63 +82,53 @@
     	</script>
 	</head>
 	<body>
-		<ul id="d-userc" class="dropdown-content">
-			<li><a href="u-list.php">ユーザ一覧</a></li>
-			<li><a href="u-addbuser.php">会計ユーザ登録</a></li>
-			<li><a href="u-addouser.php">団体ユーザ登録</a></li>
-		</ul>
-		<ul id="d-recept" class="dropdown-content">
-			<li><a href="r-qrcheck.php">QRコード</a></li>
-			<li><a href="r-kobetsu.php">個別注文</a></li>
-			<li><a href="r-return.php">払い戻し</a></li>
-		</ul>
-		<ul id="d-orgfood" class="dropdown-content">
-			<li><a href="of-list.php">団体・食品一覧</a></li>
-			<li><a href="o-add.php">団体追加</a></li>
-			<li><a href="f-add.php">食品追加</a></li>
-			<li><a href="s-check.php">ステータスチェック</a></li>
-		</ul>
-		<ul id="slide-out" class="sidenav">
-			<li>
-				<div class="user-view">
-					<div class="background">
-						<img width="100%" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Yamabuki_High_School.JPG/1200px-Yamabuki_High_School.JPG">
-					</div>
-					<a href="#!user"><img class="circle" src="img/icon.jpg"></a>
-					<a href="#!name" style="color: white;">
-						<?php
-							$UserID = $_SESSION['O_UserID'];
-							require_once('config/config.php');
-							$sql = mysqli_query($db_link, "SELECT UserName FROM tp_user_booth WHERE UserID = '$UserID'");
-							$result = mysqli_fetch_assoc($sql);
-							print($result['UserName']);
-						?>	
-					</a>
-				</div>
-			</li>
-			<li><a href="#!" class="dropdown-trigger" data-target="d-recept">受付<i class="material-icons right">arrow_drop_down</i></a></li>
-			<li><a href="#!" class="dropdown-trigger" data-target="d-orgfood">データ管理<i class="material-icons right">arrow_drop_down</i></a></li>
-			<li><a href="#!" class="dropdown-trigger" data-target="d-userc">ユーザ管理<i class="material-icons right">arrow_drop_down</i></a></li>
-			<li class="divider"></li>
-			<li><a href="logout.php">ログアウト</a></li>
-		</ul>
-		<nav class="light-blue darken-4">
-			<div class="container">
-				<div class="nav-wrapper">
-					<a href="home.php" class="brand-logo">Ticper</a>
-					<div class="right hide-on-med-and-down">
-						<a href="#!" onClick="var elem = document.querySelector('.sidenav');var instance = M.Sidenav.getInstance(	elem);instance.open();" class="btn">メニューを開く</a>
-					</div>
-					<a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-				</div>
-			</div>
-		</nav>
-		<script>
-			$(".dropdown-trigger").dropdown();
-			$(function(){
-				$('.sidenav').sidenav();
-			});
-		</script>
+  <body>
+    <ul id="o-menu" class="dropdown-content">
+      <li><a href="qrcheck.php">食券読み込み</a></li>
+      <li><a href="s-check.php">食券情報表示</a></li>
+    </ul>
+    <ul id="slide-out" class="sidenav">
+      <li>
+        <div class="user-view">
+          <div class="background">
+            <img width="100%" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Yamabuki_High_School.JPG/1200px-Yamabuki_High_School.JPG">
+          </div>
+          <a href="#!user"><img class="circle" src="img/icon.jpg"></a>
+          <a href="#!name" style="color: white;">
+            <?php
+              $UserID = $_SESSION['O_UserID'];
+              require_once('config/config.php');
+              $sql = mysqli_query($db_link, "SELECT UserName, OrgID FROM tp_user_org WHERE UserID = '$UserID'");
+              $result = mysqli_fetch_assoc($sql);
+              print($result['UserName']);
+              $orgid = $result['OrgID'];
+            ?>
+          </a>
+        </div>
+      </li>
+      <li><a href="#!" class="dropdown-trigger" data-target="o-menu">食券管理メニュー<i class="material-icons right">arrow_drop_down</i></a></li>
+      <li class="divider"></li>
+      <li><a href="o-changestatus.php">混雑度管理メニュー</a></li>
+      <li class="divider"></li>
+      <li><a href="logout.php">ログアウト</a></li>
+    </ul>
+    <nav class="light-blue darken-4">
+      <div class="container">
+        <div class="nav-wrapper">
+          <a href="home.php" class="brand-logo">Ticper</a>
+          <div class="right hide-on-med-and-down">
+            <a href="#!" onClick="var elem = document.querySelector('.sidenav');var instance = M.Sidenav.getInstance(elem);instance.open();" class="btn">メニューを開く</a>
+          </div>
+          <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        </div>
+      </div>
+    </nav>
+    <script>
+      $(".dropdown-trigger").dropdown();
+      $(document).ready(function(){
+        $('.sidenav').sidenav();
+      });
+    </script>
 		<div class="container">
 			<div class="row">
 			<div class="col s12">

@@ -55,7 +55,7 @@
             <?php
               $UserID = $_SESSION['O_UserID'];
               require_once('config/config.php');
-              $sql = mysqli_query($db_link, "SELECT UserName FROM tp_user_booth WHERE UserID = '$UserID'");
+              $sql = mysqli_query($db_link, "SELECT UserName FROM tp_user_org WHERE UserID = '$UserID'");
               $result = mysqli_fetch_assoc($sql);
               print($result['UserName']);
             ?>

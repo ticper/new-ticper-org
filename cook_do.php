@@ -11,7 +11,7 @@
   $e_maisu = $db_link -> real_escape_string($maisu);
 
   // SQL文をデータベース鯖に投げる
-  $sql = mysqli_query($db_link, "UPDATE tp_food SET cooked = cooked + '$maisu' WHERE FoodID = '$foodid'");
+  $sql = mysqli_query($db_link, "UPDATE tp_ticket SET cook = 1 WHERE FoodID = '$foodid' AND Sheets = '$maisu' limit 1");
 
   print("<script>alert('更新しました');location.href = 'cook.php';</script>");
 ?>
