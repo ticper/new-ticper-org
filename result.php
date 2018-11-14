@@ -28,6 +28,7 @@
 		print("<script>alert('このQRはあなたの団体では使用できません。もう一度確認して下さい');location.href = 'qrcheck.php';</script>");
 	} else {
 		mysqli_query($db_link, "UPDATE tp_ticket SET Used = '1' WHERE TicketACode = '$acode'");
+		mysqli_query($db_link, "UPDATE tp_ticket SET Cook = '1' WHERE TicketACode = '$acode'");
 		mysqli_query($db_link, "UPDATE tp_food SET Used = Used + '$seets' WHERE FoodID = '$foodid'");
 	}
 ?>
