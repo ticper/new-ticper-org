@@ -3,7 +3,6 @@
   if(isset($_SESSION['O_UserID']) == '') {
     print("<script>location.href = 'index.php';</script>");
   } else {
-
   }
 ?>
 <!DOCTYPE HTML>
@@ -35,7 +34,6 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'UA-113412923-2');
     </script>
   </head>
@@ -55,10 +53,9 @@
             <?php
               $UserID = $_SESSION['O_UserID'];
               require_once('config/config.php');
-              $sql = mysqli_query($db_link, "SELECT UserName, OrgID FROM tp_user_org WHERE UserID = '$UserID'");
+              $sql = mysqli_query($db_link, "SELECT UserName FROM tp_user_booth WHERE UserID = '$UserID'");
               $result = mysqli_fetch_assoc($sql);
               print($result['UserName']);
-              $orgid = $result['OrgID'];
             ?>
           </a>
         </div>
@@ -91,26 +88,21 @@
         <div class="row s12">
           <h3>調理依頼</h3>
           <table>
-            <tr><th>食品名</th><th>残生産数</th><th>送信</th></tr>
+            <tr><th>団体名</th><th>食品名</th><th>残生産数</th><th>送信</th></tr>
           <?php
-            $sql = mysqli_query($db_link,"SELECT FoodID,FoodName FROM tp_food WHERE OrgID = '$orgid'");
+            $sql = mysqli_query($db_link,"SELECT FoodID,cook,cooked,FoodName,OrgID FROM tp_food ORDER BY OrgID DESC");
             while($result = mysqli_fetch_assoc($sql)) {
               $foodid= $result['FoodID'];
-              $sql2 = mysqli_query($db_link, "SELECT SUM(Sheets) AS num FROM tp_ticket WHERE FoodID = '$foodid' AND Used = 1 AND Cook = 0");
+              $sql2 = mysqli_query($db_link, "SELECT SUM(Sheets) AS num FROM tp_ticket WHERE FoodID = '$foodid' AND Used=1 ");
               $cook = mysqli_fetch_assoc($sql2);
+              $cooking = $cook['num'] - $result['cooked'];
+              $orgid = $result['OrgID'];
+              $sql3 = mysqli_query($db_link,"SELECT OrgName FROM tp_org WHERE OrgID = '$orgid'");
+              $result3 = mysqli_fetch_assoc($sql3);
               $cook_do = $cook['num'];
-              print('<tr><td>'.$result['FoodName'].'</td><td>'.$cook_do.'</td><td><form action="cook_do.php" method="POST"><input type="hidden" name="FoodID" value="'.$result['FoodID'].'"><input required style="width: 100px;" placeholder="枚数を入力" type="number" name="maisu" min="1" max="'.$cook['num'].'"><input class="btn" type="submit" value="送信"></form></td></tr>');
-              $sql3 = mysqli_query($db_link, "SELECT COUNT(*) AS num FROM tp_ticket WHERE FoodID = '$foodid' AND Used = 1 AND Cook = 0 AND Sheets = 5");
-              $goken = mysqli_fetch_assoc($sql3);
-              $sql3 = mysqli_query($db_link, "SELECT COUNT(*) AS num FROM tp_ticket WHERE FoodID = '$foodid' AND Used = 1 AND Cook = 0 AND Sheets = 4");
-              $yonken = mysqli_fetch_assoc($sql3);
-              $sql3 = mysqli_query($db_link, "SELECT COUNT(*) AS num FROM tp_ticket WHERE FoodID = '$foodid' AND Used = 1 AND Cook = 0 AND Sheets = 3");
-              $sanken = mysqli_fetch_assoc($sql3);
-              $sql3 = mysqli_query($db_link, "SELECT COUNT(*) AS num FROM tp_ticket WHERE FoodID = '$foodid' AND Used = 1 AND Cook = 0 AND Sheets = 2");
-              $niken = mysqli_fetch_assoc($sql3);
-              $sql3 = mysqli_query($db_link, "SELECT COUNT(*) AS num FROM tp_ticket WHERE FoodID = '$foodid' AND Used = 1 AND Cook = 0 AND Sheets = 1");
-              $itsuken = mysqli_fetch_assoc($sql3);
-              print('<tr><td colspan="3">5枚x'.$goken['num'].'件,4枚x'.$yonken['num'].'件,3枚x'.$sanken['num'].'件,2枚x'.$niken['num'].'件,1枚x'.$itsuken['num'].'件</td></tr>');
+              if($cooking > 0){
+                print('<tr><td>'.$result3['OrgName'].'</td><td>'.$result['FoodName'].'</td><td>'.$cooking.'</td><td><form action="cook_do.php" method="POST"><input type="hidden" name="FoodID" value="'.$result['FoodID'].'"><input required style="width: 100px;" placeholder="枚数を入力" type="number" name="maisu" min="1" max="'.$cooking.'"><input class="btn" type="submit" value="送信"></form></td></tr>');
+              }
             }
           ?>
         </div>
