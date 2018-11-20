@@ -19,7 +19,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- ページタイトル -->
-    <title>メニュー - Ticper</title>
+    <title>食券受付 - Ticper</title>
 
     <!-- jQuery(フレームワーク)導入 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -55,9 +55,10 @@
             <?php
               $UserID = $_SESSION['O_UserID'];
               require_once('config/config.php');
-              $sql = mysqli_query($db_link, "SELECT UserName FROM tp_user_org WHERE UserID = '$UserID'");
+              $sql = mysqli_query($db_link, "SELECT UserName, OrgID FROM tp_user_org WHERE UserID = '$UserID'");
               $result = mysqli_fetch_assoc($sql);
               print($result['UserName']);
+              $OrgID = $result['OrgID'];
             ?>
           </a>
         </div>
@@ -81,20 +82,27 @@
         </div>
       </div>
     </nav>
-    <script>
-      $(".dropdown-trigger").dropdown();
-      $(document).ready(function(){
-        $('.sidenav').sidenav();
-        M.toast({html: '<?php print($result['UserName']); ?>としてログインしました。'})
-      });
-    </script>
     <div class="container">
-      <div class="row">
-        <div class="row s12">
-          <h3>ようこそ</h3>
-          <p>ようこそ、<?php print($result['UserName']); ?>さん。<br>メニューを開いて、アクションを選んでください。</p>
+        <div class="row">
+            <div class="col s12">
+              <br><br>
+              <a href="qrcheck.php" class="btn"><font size="5"><b>食券を読み取る</b></font></a>
+              <h2>待機中</h2>
+              <table>
+                <tr><th>受付番号</th><th>商品名</th><th>数量</th><th>ステータス変更</th></tr>
+                <?php
+                    $sql = mysqli_query($db_link, "SELECT * FROM tp_food WHERE OrgID = '$OrgID'");
+                    while($result2 = mysqli_fetch_assoc($sql)) {
+                        $FoodID = $result2['FoodID'];
+                        $FoodName = $result2['FoodName'];
+                        $sql2 = mysqli_query($db_link, "SELECT * FROM tp_ticket WHERE FoodID = '$FoodID' AND Used = '1' AND Changed = '0' ORDER BY ChangeNo ASC");
+                        while($result3 = mysqli_fetch_assoc($sql2)) {
+                          print('<tr><td>'.$result3['ChangeNo'].'</td><td>'.$FoodName.'</td><td>'.$result3['Sheets'].'</td><td><a href="c-changestatus.php?id='.$result3['ChangeNo'].'" class="btn"><font size="3"><b>ステータス変更</b></font></a></td></tr>');
+                        }
+                    }
+                    
+                ?>
+              </table>
+            </div>
         </div>
-      </div>
     </div>
-  </body>
-</html>

@@ -29,6 +29,10 @@
 	} else {
 		mysqli_query($db_link, "UPDATE tp_ticket SET Used = '1' WHERE TicketACode = '$acode'");
 		mysqli_query($db_link, "UPDATE tp_ticket SET Cook = '1' WHERE TicketACode = '$acode'");
+		$sql2 = mysqli_query($db_link, "SELECT MAX(ChangeNo) AS num FROM tp_ticket");
+		$result5 = mysqli_fetch_assoc($sql2);
+		$cn = $result5['num'] + 1;
+		mysqli_query($db_link, "UPDATE tp_ticket SET ChangeNo = '$cn'");
 		mysqli_query($db_link, "UPDATE tp_food SET Used = Used + '$seets' WHERE FoodID = '$foodid'");
 	}
 ?>
@@ -127,7 +131,10 @@
 			<div class="row">
 			<div class="col s12">
 					<h3>食券を使用しました</h3>
-					<p>次の食品を提供して下さい</p>
+					<h4>操作を選んでください</h4>
+					<a href="c-changestatus.php?id=<?php print($cn); ?>" class="btn"><font size="3"><b>即時受け渡し</b></font></a>&nbsp;<a href="changelist.php" class="btn"><font size="3"><b>調理依頼を行う</b></font></a><br>
+					<a href="qrcheck.php" class="btn"><font size="3"><b>次のQRコードを読み込む</b></font></a>
+					<p>食券の情報です</p>
 					<table>
 						<thead>
 							<tr>
