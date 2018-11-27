@@ -35,6 +35,7 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'UA-113412923-2');
+      setTimeout("location.href = 'cook.php'",30000);
     </script>
   </head>
   <body>
@@ -90,10 +91,14 @@
           <table>
             <tr><th>団体名</th><th>食品名</th><th>残生産数</th><th>送信</th></tr>
           <?php
-            $sql = mysqli_query($db_link,"SELECT FoodID,cook,cooked,FoodName,OrgID FROM tp_food ORDER BY OrgID DESC");
+            $userid = $_SESSION['O_UserID'];
+            $sql0 = mysqli_query($db_link,"SELECT OrgID FROM tp_user_org WHERE UserID = '$userid'");
+            $result0 = mysqli_fetch_assoc($sql0);
+            $o_id = $result0['OrgID'];
+            $sql = mysqli_query($db_link,"SELECT FoodID,cooked,FoodName,OrgID FROM tp_food WHERE cook = 1 AND OrgID = '$o_id' ORDER BY OrgID DESC");
             while($result = mysqli_fetch_assoc($sql)) {
               $foodid= $result['FoodID'];
-              $sql2 = mysqli_query($db_link, "SELECT SUM(Sheets) AS num FROM tp_ticket WHERE FoodID = '$foodid' AND Used=1 ");
+              $sql2 = mysqli_query($db_link, "SELECT SUM(Sheets) AS num FROM tp_ticket WHERE FoodID = '$foodid' AND Changed= 0 AND Used =1");
               $cook = mysqli_fetch_assoc($sql2);
               $cooking = $cook['num'] - $result['cooked'];
               $orgid = $result['OrgID'];
