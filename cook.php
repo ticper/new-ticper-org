@@ -98,7 +98,7 @@
             $sql = mysqli_query($db_link,"SELECT FoodID,cooked,FoodName,OrgID FROM tp_food WHERE cook = 1 AND OrgID = '$o_id' ORDER BY OrgID DESC");
             while($result = mysqli_fetch_assoc($sql)) {
               $foodid= $result['FoodID'];
-              $sql2 = mysqli_query($db_link, "SELECT SUM(Sheets) AS num FROM tp_ticket WHERE FoodID = '$foodid' AND Changed= 0 AND Used =1");
+              $sql2 = mysqli_query($db_link, "SELECT SUM(Sheets) AS num FROM tp_ticket WHERE FoodID = '$foodid' AND Used =1");
               $cook = mysqli_fetch_assoc($sql2);
               $cooking = $cook['num'] - $result['cooked'];
               $orgid = $result['OrgID'];
