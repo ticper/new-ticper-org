@@ -82,6 +82,12 @@
         </div>
       </div>
     </nav>
+    <script>
+      $(".dropdown-trigger").dropdown();
+      $(document).ready(function(){
+        $('.sidenav').sidenav();
+      });
+    </script>
     <div class="container">
         <div class="row">
             <div class="col s12">

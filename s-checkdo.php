@@ -50,7 +50,7 @@
   </head>
   <body>
     <ul id="o-menu" class="dropdown-content">
-      <li><a href="qrcheck.php">食券読み込み</a></li>
+      <li><a href="changelist.php">食券受付</a></li>
       <li><a href="s-check.php">食券情報表示</a></li>
     </ul>
     <ul id="slide-out" class="sidenav">
@@ -63,9 +63,11 @@
           <a href="#!name" style="color: white;">
             <?php
               $UserID = $_SESSION['O_UserID'];
-              $sql = mysqli_query($db_link, "SELECT UserName FROM tp_user_booth WHERE UserID = '$UserID'");
+              require_once('config/config.php');
+              $sql = mysqli_query($db_link, "SELECT UserName, OrgID FROM tp_user_org WHERE UserID = '$UserID'");
               $result = mysqli_fetch_assoc($sql);
               print($result['UserName']);
+              $OrgID = $result['OrgID'];
             ?>
           </a>
         </div>
@@ -73,6 +75,8 @@
       <li><a href="#!" class="dropdown-trigger" data-target="o-menu">食券管理メニュー<i class="material-icons right">arrow_drop_down</i></a></li>
       <li class="divider"></li>
       <li><a href="o-changestatus.php">混雑度管理メニュー</a></li>
+      <li class="divider"></li>
+      <li><a href="cook.php">調理管理メニュー</a></li>
       <li class="divider"></li>
       <li><a href="logout.php">ログアウト</a></li>
     </ul>
