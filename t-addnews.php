@@ -1,4 +1,10 @@
 <?php
+    if(isset($_SESSION['O_UserID']) == '') {
+        print("<script>location.href = 'index.php';</script>");
+        exit();
+    } else {
+
+    }
     session_start();
     $orgid = $_SESSION['OrgID'];
     $News = $_POST['news'];

@@ -1,6 +1,12 @@
 <?php
   // セッションを開始
   session_start();
+    if(isset($_SESSION['O_UserID']) == '') {
+        print("<script>location.href = 'index.php';</script>");
+        exit();
+    } else {
+
+    }
 
   // セッション変数「UserID」にログイン中のユーザ名がないとき、ログイン画面に戻す。
   if(isset($_SESSION['O_UserID']) == '') {

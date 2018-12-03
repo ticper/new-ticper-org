@@ -2,6 +2,7 @@
   session_start();
   if(isset($_SESSION['O_UserID']) == '') {
     print("<script>location.href = 'index.php';</script>");
+    exit();
   } else {
     require_once('config/config.php');
     $foodid = $_GET['id'];

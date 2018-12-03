@@ -4,6 +4,7 @@
 	$acode = $_GET['acode'];
 	if(isset($_SESSION['O_UserID']) == ''){
 		print("<script>alert('ログインしてからアクセスして下さい'); location.href = 'qrcheck.php';</script>");
+		exit();
 		} else {
 		if($acode == '') {
 			print("<script>alert('不正なリクエスト');location.href = 'qrcheck.php';</script>");
