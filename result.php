@@ -8,7 +8,9 @@
 		} else {
 		if($acode == '') {
 			print("<script>alert('不正なリクエスト');location.href = 'qrcheck.php';</script>");
+			exit();
 			} else {
+            $acode = $db_link -> real_escape_string($acode);
 			$sql = mysqli_query($db_link, "SELECT Used,Sheets,FoodID FROM tp_ticket WHERE TicketACode = '$acode'");
 			$userid = $_SESSION['O_UserID'];
 			$result = mysqli_fetch_assoc($sql);

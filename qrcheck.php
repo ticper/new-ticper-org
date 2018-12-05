@@ -3,8 +3,6 @@
   if(isset($_SESSION['O_UserID']) == '') {
     print("<script>location.href = 'index.php';</script>");
     exit();
-  } else {
-
   }
 
   if(isset($_POST['num'])){

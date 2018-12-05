@@ -7,12 +7,14 @@
     require_once('config/config.php');
     $foodid = $_GET['id'];
     $userid = $_SESSION['O_UserID'];
+    $foodid = $db_link -> real_escape_string($foodid);
     $sql = mysqli_query($db_link,"SELECT OrgID FROM tp_user_org WHERE UserID = '$userid'");
     $result = mysqli_fetch_assoc($sql);
     $sql2 = mysqli_query($db_link,"SELECT OrgID FROM tp_food WHERE FoodID = '$foodid'");
     $result2 = mysqli_fetch_assoc($sql2);
     if($result['OrgID'] != $result2['OrgID']){
       print('<script>alert("この食品情報はあなたのアカウントでは閲覧できません");location.href = "s-check.php";</script>');
+      exit();
     }
   }
 ?>
