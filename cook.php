@@ -3,7 +3,6 @@
   if(isset($_SESSION['O_UserID']) == '') {
     print("<script>location.href = 'index.php';</script>");
     exit();
-  } else {
   }
 ?>
 <!DOCTYPE HTML>
